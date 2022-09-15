@@ -13,58 +13,41 @@
 ########################################################
 ########################################################
 
-
 # list of variables, just add more to generate
-vars = ['kA',
-        'kF',
-        'kJ',
-        'kP',
-        'kI',
-        'kD',
-        'kB',
-        'kG',
-        'firstRun',
-        'log',
-        'logSpeed',
-        'target',
-        'input',
-        'error',
-        'totalError',
-        'derivative',
-        'prevError',
-        'prevDerivative',
-        'targetAccel',
-        'output'  
-        ]
+vars = [
+    'kA', 'kF', 'kJ', 'kP', 'kI', 'kD', 'kB', 'kG', 'firstRun', 'log',
+    'logSpeed', 'target', 'input', 'error', 'totalError', 'derivative',
+    'prevError', 'prevDerivative', 'targetAccel', 'output'
+]
 
 firstRun = True
 ## output line
 output = ''
 tab = '    '
 
-
 ## main loop
 for x in vars:
-  if firstRun:
-    output += 'if (input.substr(0, ' + str(len(x)) + ') == "' + x + '") {\n'
-    firstRun = False
-  else:
-    output += '} else if (input.substr(0, ' + str(len(x)) + ') == "' + x + '") {\n'
-  output += tab + 'input.erase(0, ' + str(len(x)) + ')\n'
-  output += tab + 'if (input == "") {\n'
-  output += tab + tab + 'mainMutex.take(TIMEOUT_MAX);\n'
-  output += tab + tab + 'std::cout << ' + x + ': << ' + x + ' << std::endl;\n'
-  output += tab + tab + 'mainMutex.give();\n'
-  output += tab + '} else {\n'
-  output += tab + tab + 'if (input.find_first_not_of("0123456789.") == std::string::npos) {\n'
-  output += tab + tab + tab + 'mainMutex.take(TIMEOUT_MAX);\n'
-  output += tab + tab + tab + x + ' = std::stof(input);\n'
-  output += tab + tab + tab + 'std::cout << "' + x + ' set to "' + ' << ' + x + ' <<' + ' std::endl;\n'
-  output += tab + tab + tab + 'mainMutex.give();\n'
-  output += tab + tab + '} else {\n'
-  output += tab + tab + tab + 'std::cout << "invalid input" << std::endl;\n'
-  output += tab + tab + '}\n'
-  output += tab + '}\n'
-output += '}\n'
+    if firstRun:
+        output += tab + tab + 'if (input.substr(0, ' + str(
+            len(x)) + ') == "' + x + '") {\n'
+        firstRun = False
+    else:
+        output += tab + tab + '} else if (input.substr(0, ' + str(len(x)) + ') == "' + x + '") {\n'
+    output += tab + tab + tab + 'input.erase(0, ' + str(len(x)) + ');\n'
+    output += tab + tab + tab + 'if (input == "") {\n'
+    output += tab + tab + tab + tab + 'mainMutex.take(TIMEOUT_MAX);\n'
+    output += tab + tab + tab + tab + 'std::cout << "' + x + ':" << ' + x + ' << std::endl;\n'
+    output += tab + tab + tab + tab + 'mainMutex.give();\n'
+    output += tab + tab + tab + '} else {\n'
+    output += tab + tab + tab + tab + 'if (input.find_first_not_of("0123456789.") == std::string::npos) {\n'
+    output += tab + tab + tab + tab + tab + 'mainMutex.take(TIMEOUT_MAX);\n'
+    output += tab + tab + tab + tab + tab + x + ' = std::stof(input);\n'
+    output += tab + tab + tab + tab + tab + 'std::cout << "' + x + ' set to "' + ' << ' + x + ' <<' + ' std::endl;\n'
+    output += tab + tab + tab + tab + tab + 'mainMutex.give();\n'
+    output += tab + tab + tab + tab + '} else {\n'
+    output += tab + tab + tab + tab + tab + 'std::cout << "invalid input" << std::endl;\n'
+    output += tab + tab + tab + tab + '}\n'
+    output += tab + tab + tab + '}\n'
+output += tab + tab + '}\n'
 
 print(output)
