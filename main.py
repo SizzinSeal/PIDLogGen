@@ -25,6 +25,10 @@ firstRun = True
 output = ''
 tab = '    '
 
+# first if statement
+output += tab + 'if (input.substr(0, name.length()) == name + ".") {\n'
+output += tab + tab + 'input.erase(0, name.length());\n'
+
 ## main loop
 for x in vars:
     if firstRun:
@@ -32,7 +36,8 @@ for x in vars:
             len(x)) + ') == "' + x + '") {\n'
         firstRun = False
     else:
-        output += tab + tab + '} else if (input.substr(0, ' + str(len(x)) + ') == "' + x + '") {\n'
+        output += tab + tab + '} else if (input.substr(0, ' + str(
+            len(x)) + ') == "' + x + '") {\n'
     output += tab + tab + tab + 'input.erase(0, ' + str(len(x)) + ');\n'
     output += tab + tab + tab + 'if (input == "") {\n'
     output += tab + tab + tab + tab + 'mainMutex.take(TIMEOUT_MAX);\n'
@@ -49,5 +54,6 @@ for x in vars:
     output += tab + tab + tab + tab + '}\n'
     output += tab + tab + tab + '}\n'
 output += tab + tab + '}\n'
+output += tab + '}\n'
 
 print(output)
